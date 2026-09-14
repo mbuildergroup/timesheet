@@ -1,0 +1,370 @@
+:root {
+  --navy: #06154f;
+  --navy-mid: #183a78;
+  --navy-light: #315d9d;
+
+  --orange: #d84d3f;
+  --orange-light: #f06a55;
+
+  --white: #ffffff;
+  --page: #f5f7fa;
+  --text: #14213d;
+  --border: #e7eaf0;
+}
+
+html,
+body {
+  background: var(--page) !important;
+}
+
+.ts-header {
+  background: #ffffff !important;
+
+  min-height: 82px !important;
+
+  padding: 0 30px !important;
+
+  border: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+
+  box-shadow:
+    0 3px 12px rgba(6, 21, 79, 0.06) !important;
+}
+
+.ts-logo {
+  width: 58px !important;
+  height: 58px !important;
+
+  border-radius: 10px !important;
+
+  overflow: hidden !important;
+
+  box-shadow: none !important;
+}
+
+.horizontal-menu {
+  background: transparent !important;
+
+  max-width: 390px !important;
+
+  padding: 0 !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
+}
+
+.horizontal-menu__item {
+  background: transparent !important;
+
+  padding: 10px 17px !important;
+
+  border-radius: 8px !important;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease !important;
+}
+
+.horizontal-menu__item-label {
+  color: var(--navy) !important;
+
+  background: transparent !important;
+
+  font-size: 15px !important;
+  font-weight: 600 !important;
+
+  letter-spacing: 0.2px !important;
+}
+
+.horizontal-menu__item:hover {
+  background: #f2f4f8 !important;
+}
+
+.horizontal-menu__item:hover .horizontal-menu__item-label {
+  color: var(--orange) !important;
+}
+
+.horizontal-menu a,
+.horizontal-menu a:link,
+.horizontal-menu a:visited,
+.horizontal-menu a:hover,
+.horizontal-menu a:active,
+.horizontal-menu [aria-current="page"] {
+  background: transparent !important;
+
+  box-shadow: none !important;
+}
+
+.horizontal-menu [aria-current="page"],
+.horizontal-menu [aria-current="page"] * {
+  color: var(--orange) !important;
+}
+
+.ts-card {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-height: 320px !important;
+
+  padding: 0 !important;
+
+  box-sizing: border-box !important;
+
+  overflow: hidden !important;
+
+  border: 6px solid var(--page) !important;
+
+  border-radius: 22px !important;
+
+  box-shadow:
+    0 7px 20px rgba(6, 21, 79, 0.10) !important;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+.ts-card:hover {
+  transform: translateY(-4px);
+
+  box-shadow:
+    0 13px 28px rgba(6, 21, 79, 0.15) !important;
+}
+
+.ts-submit {
+  background:
+    linear-gradient(
+      135deg,
+      var(--navy) 0%,
+      var(--navy-mid) 55%,
+      var(--navy-light) 100%
+    ) !important;
+}
+
+.ts-hours {
+  background:
+    linear-gradient(
+      135deg,
+      #c9453b 0%,
+      var(--orange) 52%,
+      var(--orange-light) 100%
+    ) !important;
+}
+
+.ts-maps {
+  background:
+    linear-gradient(
+      135deg,
+      #10275f 0%,
+      #28518d 55%,
+      #4772ad 100%
+    ) !important;
+}
+
+.ts-card-title {
+  position: absolute !important;
+
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+
+  padding: 30px !important;
+
+  box-sizing: border-box !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+  justify-content: center !important;
+
+  background: transparent !important;
+
+  color: #ffffff !important;
+
+  text-align: center !important;
+
+  font-size: clamp(30px, 2.2vw, 40px) !important;
+
+  font-weight: 700 !important;
+
+  line-height: 1.08 !important;
+
+  letter-spacing: 0.2px !important;
+
+  white-space: normal !important;
+
+  word-break: keep-all !important;
+
+  overflow-wrap: normal !important;
+}
+
+.ts-card-title *,
+.ts-card-title p,
+.ts-card-title span,
+.ts-card-title h1,
+.ts-card-title h2,
+.ts-card-title h3,
+.ts-card-title .rich-text__text {
+  width: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #ffffff !important;
+
+  background: transparent !important;
+
+  text-align: center !important;
+
+  font-weight: 700 !important;
+
+  line-height: 1.08 !important;
+}
+
+@media (max-width: 1000px) {
+  .ts-header {
+    min-height: 76px !important;
+
+    padding: 0 22px !important;
+  }
+
+  .ts-logo {
+    width: 52px !important;
+    height: 52px !important;
+  }
+
+  .horizontal-menu {
+    max-width: 345px !important;
+  }
+
+  .horizontal-menu__item {
+    padding: 9px 13px !important;
+  }
+
+  .horizontal-menu__item-label {
+    font-size: 14px !important;
+  }
+
+  .ts-card {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-height: 250px !important;
+
+    border-width: 5px !important;
+
+    border-radius: 20px !important;
+  }
+
+  .ts-card-title {
+    padding: 24px !important;
+
+    font-size: 28px !important;
+  }
+}
+
+@media (max-width: 750px) {
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .ts-header {
+    min-height: 66px !important;
+
+    padding: 0 14px !important;
+
+    box-shadow: none !important;
+  }
+
+  .ts-logo {
+    width: 48px !important;
+    height: 48px !important;
+
+    border-radius: 8px !important;
+  }
+
+  .horizontal-menu {
+    max-width: 100% !important;
+  }
+
+  .horizontal-menu__item {
+    padding: 7px 8px !important;
+  }
+
+  .horizontal-menu__item-label {
+    font-size: 12px !important;
+  }
+
+  .ts-card {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    min-height: 190px !important;
+
+    border: 0 !important;
+
+    box-shadow: none !important;
+
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+    .ts-submit {
+  width: 84vw !important;
+  max-width: 340px !important;
+  min-width: 0 !important;
+
+  margin-left: auto !important;
+  margin-right: 0 !important;
+
+  border-radius: 68px 0 0 68px !important;
+}
+
+.ts-hours {
+  width: 82vw !important;
+  max-width: 330px !important;
+  min-width: 0 !important;
+
+  margin-left: 0 !important;
+  margin-right: auto !important;
+
+  border-radius: 0 68px 68px 0 !important;
+}
+
+.ts-maps {
+  width: 84vw !important;
+  max-width: 340px !important;
+  min-width: 0 !important;
+
+  margin-left: auto !important;
+  margin-right: 0 !important;
+
+  border-radius: 68px 0 0 68px !important;
+}
+
+  .ts-card-title {
+    padding: 20px !important;
+
+    font-size: 25px !important;
+
+    line-height: 1.05 !important;
+  }
+
+  .ts-card:hover {
+    transform: none !important;
+
+    box-shadow: none !important;
+  }
+}
