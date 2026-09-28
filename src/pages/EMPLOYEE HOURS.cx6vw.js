@@ -1,22 +1,43 @@
 import wixLocationFrontend from 'wix-location-frontend';
-import { getEmployeeHours } from 'backend/timesheet.web';
+import { getEmployees, getEmployeeHours } from 'backend/timesheet.web';
+
+let selectionNumber = 0;
 
 $w.onReady(async function () {
-  const employeeName = wixLocationFrontend.query.employee;
+  $w('#employeeHoursSection').collapse();
 
-  setLoadingState();
+  $w('#employeeRepeater').onItemReady(($item, itemData) => {
+    $item('#employeeName').text = itemData.name;
+    $item('#employeeName').onClick(() => showEmployeeHours(itemData.name));
+  });
 
-  if (!employeeName) {
-    showError('Employee сонгогдоогүй байна.');
-    return;
+  try {
+    const employees = await getEmployees();
+    $w('#employeeRepeater').data = employees.map((employee, index) => ({
+      _id: String(index + 1),
+      name: employee.name
+    }));
+
+    const selectedName = wixLocationFrontend.query.employee;
+    if (selectedName) {
+      await showEmployeeHours(selectedName);
+    }
+  } catch (error) {
+    console.error('Employee list load error:', error);
+    $w('#employeeHoursSection').expand();
+    showError('Ажилтнуудын жагсаалт уншихад алдаа гарлаа.');
   }
+});
 
+async function showEmployeeHours(employeeName) {
+  const currentSelection = ++selectionNumber;
   $w('#employeeTitle').text = employeeName;
+  $w('#employeeHoursSection').expand();
+  setLoadingState();
 
   try {
     const data = await getEmployeeHours(employeeName);
-
-    console.log('Employee hours:', data);
+    if (currentSelection !== selectionNumber) return;
 
     renderPayPeriod(data);
     renderHours(data);
@@ -28,35 +49,30 @@ $w.onReady(async function () {
     $w('#week1TotalText').show();
     $w('#week2TotalText').show();
     $w('#periodTotalText').show();
-
   } catch (error) {
+    if (currentSelection !== selectionNumber) return;
     console.error('Employee hours load error:', error);
     showError('Цагийн мэдээлэл уншихад алдаа гарлаа.');
   }
-});
-
+}
 
 function setLoadingState() {
   $w('#statusText').text = 'Loading...';
-
   $w('#hoursRepeater').hide();
   $w('#payPeriodText').hide();
   $w('#week1TotalText').hide();
   $w('#week2TotalText').hide();
   $w('#periodTotalText').hide();
 }
-
 
 function showError(message) {
   $w('#statusText').text = message;
-
   $w('#hoursRepeater').hide();
   $w('#payPeriodText').hide();
   $w('#week1TotalText').hide();
   $w('#week2TotalText').hide();
   $w('#periodTotalText').hide();
 }
-
 
 function renderPayPeriod(data) {
   const start =
@@ -169,7 +185,7 @@ function makeRow(day, entry, index) {
   let timeText = '';
   let hoursText = '';
 
-  if (status === 'OFF') {
+  if (entry.off === true || status === 'OFF') {
     siteText = 'OFF';
     timeText = '';
     hoursText = '0 hrs';
