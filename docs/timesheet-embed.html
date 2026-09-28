@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{font-family:Inter,Arial,sans-serif;color:#14213d;background:#f5f7fa;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button{font:inherit}
+.app{max-width:760px;margin:0 auto;padding:18px 16px 36px}
+.hero{background:#06154f;color:white;border-radius:18px;padding:24px;margin-bottom:20px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.13em;opacity:.75}
+h1{font-size:25px;line-height:1.2;margin:7px 0 4px}
+.hero p{margin:0;color:#dce5ff;font-size:14px}
+.section-title{font-size:18px;margin:22px 0 12px}
+.list{display:grid;gap:9px}
+.person{width:100%;min-height:62px;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:13px 17px;border:1px solid #e7eaf0;border-radius:12px;background:#fff;color:#06154f;font-weight:650;cursor:pointer;box-shadow:0 2px 8px rgba(6,21,79,.04)}
+.person:hover,.person:focus-visible{border-color:#d84d3f;outline:2px solid transparent;background:#fff9f8}
+.arrow{color:#d84d3f;font-size:22px}
+.back{display:inline-flex;align-items:center;gap:8px;background:none;border:0;color:#183a78;font-weight:700;padding:10px 0;cursor:pointer}
+.summary{background:#fff;border:1px solid #e7eaf0;border-radius:16px;padding:18px;margin:12px 0 18px}
+.summary h2{font-size:22px;margin:0 0 5px}
+.muted{color:#64748b;font-size:13px}
+.total{font-size:28px;color:#06154f;font-weight:800;margin-top:14px}
+.week{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px;font-weight:750;color:#06154f}
+.days{display:grid;gap:8px}
+.day{background:#fff;border:1px solid #e7eaf0;border-radius:12px;padding:14px 16px}
+.day-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:700}
+.day-date{font-size:14px}.day-hours{white-space:nowrap;color:#06154f}
+.entry{display:flex;justify-content:space-between;gap:12px;margin-top:9px;font-size:14px}
+.site{min-width:0;overflow-wrap:anywhere}.time{white-space:nowrap;color:#475569}
+.off{color:#8b4c23}.empty{color:#94a3b8;font-weight:400}
+.error{padding:16px;border:1px solid #f2b9af;border-radius:12px;background:#fff6f3;color:#983d32}
+.loading{padding:20px 3px;color:#64748b}
+[hidden]{display:none!important}
+@media(max-width:480px){.app{padding:12px 12px 30px}.hero{padding:20px}h1{font-size:22px}.entry{display:block}.time{display:block;margin-top:3px}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="hero"><div class="eyebrow">M Builder Group</div><h1>Ажлын цаг</h1><p>Ажилтнаа сонгож 14 хоногийн цагийг харна уу</p></header>
+  <div id="notice" class="loading" role="status">Мэдээлэл уншиж байна…</div>
+  <section id="people" hidden><h2 class="section-title">Ажилтнууд</h2><div id="names" class="list"></div></section>
+  <section id="detail" hidden>
+    <button id="back" class="back" type="button">← Бүх ажилтан</button>
+    <div class="summary"><h2 id="employee"></h2><div id="period" class="muted"></div><div id="total" class="total"></div></div>
+    <div id="weeks"></div>
+  </section>
+</main>
+<script>
+const names=document.getElementById('names'),people=document.getElementById('people'),
+ detail=document.getElementById('detail'),notice=document.getElementById('notice');
+let selected='', requestId=0;
+const parentOrigin=(()=>{try{return new URL(document.referrer).origin}catch{return '*'}})();
+function send(type,employee){window.parent.postMessage({type,employee},parentOrigin)}
+function showNotice(message,isError=false){notice.textContent=message;notice.className=isError?'error':'loading';notice.hidden=false}
+function hideNotice(){notice.hidden=true}
+function dateLabel(value){const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[2]+'/'+m[3]+'/'+m[1]:String(value||'')}
+function element(tag,cls,value){const node=document.createElement(tag);if(cls)node.className=cls;if(value!==undefined)node.textContent=String(value);return node}
+function listEmployees(items){
+ names.replaceChildren();
+ for(const item of items){
+  const name=String(item.name||'').trim();if(!name)continue;
+  const button=element('button','person');button.type='button';
+  button.append(element('span','',name),element('span','arrow','›'));
+  button.onclick=()=>{selected=name;requestId++;people.hidden=true;detail.hidden=true;showNotice(name+' — цаг уншиж байна…');send('hours',name)};
+  names.append(button)
+ }
+ hideNotice();people.hidden=false;detail.hidden=true;
+}
+function showHours(data){
+ document.getElementById('employee').textContent=data.employee||selected;
+ const p=data.period||{};document.getElementById('period').textContent=dateLabel(p.start)+' – '+dateLabel(p.end);
+ document.getElementById('total').textContent=(Number(data.periodTotal)||0)+' цаг';
+ const root=document.getElementById('weeks');root.replaceChildren();
+ for(const week of data.weeks||[]){
+  const title=element('div','week');
+  title.append(element('span','',week.week+'-р долоо хоног'),element('span','',(Number(week.totalHours)||0)+' цаг'));root.append(title);
+  const days=element('div','days');
+  for(const day of week.days||[]){
+   const card=element('article','day'),head=element('div','day-head');
+   head.append(element('span','day-date',dateLabel(day.date)),element('span','day-hours',(Number(day.totalHours)||0)+' цаг'));
+   card.append(head);
+   const entries=Array.isArray(day.entries)?day.entries:[];
+   if(!entries.length)card.append(element('div','entry empty','Бүртгэлгүй'));
+   for(const entry of entries){
+    const row=element('div','entry'+(entry.off?' off':''));
+    row.append(element('span','site',entry.off?'OFF · Амарсан':(entry.siteShort||entry.site||'Объект')));
+    if(!entry.off)row.append(element('span','time',[entry.begin,entry.finish].filter(Boolean).join(' – ')+' · '+(Number(entry.hours)||0)+' цаг'));
+    card.append(row)
+   }
+   days.append(card)
+  }root.append(days)
+ }
+ hideNotice();people.hidden=true;detail.hidden=false;
+}
+document.getElementById('back').onclick=()=>{requestId++;selected='';detail.hidden=true;people.hidden=false;hideNotice()};
+window.addEventListener('message',event=>{
+ const msg=event.data||{};if(!msg.type)return;
+ if(msg.type==='employees')listEmployees(Array.isArray(msg.employees)?msg.employees:[]);
+ if(msg.type==='hours'&&msg.employee===selected)showHours(msg.data||{});
+ if(msg.type==='error') {people.hidden=true;detail.hidden=true;showNotice(msg.message||'Мэдээлэл уншихад алдаа гарлаа.',true)}
+});
+send('ready');
+</script>
+</body>
+</html>
